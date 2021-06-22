@@ -73,6 +73,43 @@ export const StackedAreaChart = ({
       const chart = AmCore.create(chartElementRef.current, AmCharts.XYChart)
       setChart(chart)
 
+      // set chart number formatter
+      chart.numberFormatter.numberFormat = '$#.##a'
+
+      // set chart title
+      const chartTitle = chart.titles.create()
+      chartTitle.fontSize = 25
+      chartTitle.marginBottom = 20
+      setChartTitle(chartTitle)
+
+      // set date axis (xAxes)
+      const dateAxis = chart.xAxes.push(new AmCharts.DateAxis())
+      dateAxis.tooltip.disabled = false
+      dateAxis.tooltip.background.fill = AmCore.color('#636568')
+      dateAxis.tooltip.background.strokeWidth = 0
+      dateAxis.renderer.minGridDistance = 70
+      dateAxis.startLocation = 0.5
+      dateAxis.endLocation = 0.5
+      dateAxis.baseInterval = {
+        timeUnit: 'day',
+        count: 1
+      }
+
+      // set value axis (yAxis)
+      const valueAxis = chart.yAxes.push(new AmCharts.ValueAxis())
+      valueAxis.keepSelection = true
+      valueAxis.tooltip.disabled = false
+      valueAxis.tooltip.background.fill = AmCore.color('#636568')
+      valueAxis.tooltip.background.strokeWidth = 0
+
+      // show tooltips
+      chart.cursor = new AmCharts.XYCursor()
+      chart.cursor.xAxis = dateAxis
+
+      // Add a legend
+      chart.legend = new AmCharts.Legend()
+      chart.legend.position = 'top'
+
       // clean the chart
       return () => chart.dispose()
     }
@@ -97,12 +134,6 @@ export const StackedAreaChart = ({
 
       clearOldSeries()
 
-      // set chart title
-      const chartTitle = chart.titles.create()
-      chartTitle.fontSize = 25
-      chartTitle.marginBottom = 20
-      setChartTitle(chartTitle)
-
       // set chart data
       chart.data = groupDataObjectsByDate({
         data,
@@ -110,35 +141,9 @@ export const StackedAreaChart = ({
         xAxisKey,
         seriesNameKey,
       })
-
-      // set chart number formatter
-      chart.numberFormatter.numberFormat = '$#.##a'
-
-      // date axis (xAxes)
-      const dateAxis = chart.xAxes.push(new AmCharts.DateAxis())
-      dateAxis.tooltip.disabled = false
-      dateAxis.tooltip.background.fill = AmCore.color('#636568')
-      dateAxis.tooltip.background.strokeWidth = 0
-      dateAxis.renderer.minGridDistance = 70
-      dateAxis.startLocation = 0.5
-      dateAxis.endLocation = 0.5
-      dateAxis.baseInterval = {
-        timeUnit: 'day',
-        count: 1
-      }
-
-      // show tooltips
-      chart.cursor = new AmCharts.XYCursor()
-      chart.cursor.xAxis = dateAxis
-      
-      // value axis (yAxis)
-      const valueAxis = chart.yAxes.push(new AmCharts.ValueAxis())
-      valueAxis.tooltip.disabled = false
-      valueAxis.tooltip.background.fill = AmCore.color('#636568')
-      valueAxis.tooltip.background.strokeWidth = 0
       
       getUniqueKeyValues(data, seriesNameKey).forEach((seriesName, seriesIndex) => {
-        const series = chart.series.push(new AmCharts.LineSeries());
+        const series = chart.series.push(new AmCharts.LineSeries())
         series.name = seriesName
         series.fill = AmCore.color(colors[seriesIndex])
         series.stroke = AmCore.color(colors[seriesIndex])
@@ -154,10 +159,6 @@ export const StackedAreaChart = ({
         series.stacked = true
         series.strokeWidth = 2
       })
-      
-      // Add a legend
-      chart.legend = new AmCharts.Legend()
-      chart.legend.position = 'top'
     }
   }, [chart, data, yAxisKey, xAxisKey, seriesNameKey, colors])
 
