@@ -75,6 +75,7 @@ export const StackedAreaChart = ({
 
       // set chart number formatter
       chart.numberFormatter.numberFormat = '$#.##a'
+      chart.dateFormatter.dateFormat = 'MM/dd/yyyy'
 
       // set chart title
       const chartTitle = chart.titles.create()
@@ -85,6 +86,7 @@ export const StackedAreaChart = ({
       // set date axis (xAxes)
       const dateAxis = chart.xAxes.push(new AmCharts.DateAxis())
       dateAxis.tooltip.disabled = false
+      dateAxis.tooltipDateFormat = 'MM/dd/yyyy'
       dateAxis.tooltip.background.fill = AmCore.color('#636568')
       dateAxis.tooltip.background.strokeWidth = 0
       dateAxis.renderer.minGridDistance = 70
@@ -150,7 +152,6 @@ export const StackedAreaChart = ({
         series.dataFields.dateX = '_groupedBy'
         series.dataFields.valueY = seriesName
         series.tooltipHTML = `<span style="font-size: 14px; color: #fff;"><b>${seriesName}: {valueY.value}</b></span>`
-        series.tooltipText = '[#000]{valueY.value}[/]'
         series.tooltip.getFillFromObject = true
         series.tooltip.getStrokeFromObject = false
         series.tooltip.background.strokeWidth = 1
