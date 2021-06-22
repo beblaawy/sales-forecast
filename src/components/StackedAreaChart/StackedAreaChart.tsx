@@ -73,9 +73,32 @@ export const StackedAreaChart = ({
       const chart = AmCore.create(chartElementRef.current, AmCharts.XYChart)
       setChart(chart)
 
+      // clean the chart
+      return () => chart.dispose()
+    }
+
+    return initiateChart()
+  }, [chartElementRef])
+
+  useEffect(() => {
+    if (chart) {
+      chart.scrollbarX = hasScrollbarX ? new AmCore.Scrollbar() : null
+    }
+  }, [chart, hasScrollbarX])
+
+  useEffect(() => {
+    if (chart) {
+      // clear old series
+      const clearOldSeries = () => {
+        for (let index = chart.series.length - 1; index >= 0; index--) {
+          chart.series.removeIndex(index)
+        }
+      }
+
+      clearOldSeries()
+
       // set chart title
       const chartTitle = chart.titles.create()
-      chartTitle.text = title
       chartTitle.fontSize = 25
       chartTitle.marginBottom = 20
       setChartTitle(chartTitle)
@@ -88,6 +111,7 @@ export const StackedAreaChart = ({
         seriesNameKey,
       })
 
+      // set chart number formatter
       chart.numberFormatter.numberFormat = '$#.##a'
 
       // date axis (xAxes)
@@ -134,36 +158,14 @@ export const StackedAreaChart = ({
       // Add a legend
       chart.legend = new AmCharts.Legend()
       chart.legend.position = 'top'
-
-      // clean the chart
-      return () => chart.dispose()
     }
-
-    return initiateChart()
-  }, [chartElementRef])
-
-  useEffect(() => {
-    if (chart) {
-      chart.scrollbarX = hasScrollbarX ? new AmCore.Scrollbar() : null
-    }
-  }, [hasScrollbarX])
-
-  useEffect(() => {
-    if (chart) {
-      chart.data = groupDataObjectsByDate({
-        data,
-        yAxisKey,
-        xAxisKey,
-        seriesNameKey,
-      })
-    }
-  }, [data])
+  }, [chart, data, yAxisKey, xAxisKey, seriesNameKey, colors])
 
   useEffect(() => {
     if (chartTitle) {
       chartTitle.text = title
     }
-  }, [title])
+  }, [chartTitle, title])
 
   return (
     <div ref={chartElementRef} className="stackedAreaChart" />
