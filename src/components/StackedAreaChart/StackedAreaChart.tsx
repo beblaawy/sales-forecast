@@ -113,7 +113,7 @@ export const StackedAreaChart = ({
       valueAxis.tooltip.background.fill = AmCore.color('#636568')
       valueAxis.tooltip.background.strokeWidth = 0
       
-      getUniqueKeyValues(data, seriesNameKey).map((seriesName, seriesIndex) => {
+      getUniqueKeyValues(data, seriesNameKey).forEach((seriesName, seriesIndex) => {
         const series = chart.series.push(new AmCharts.LineSeries());
         series.name = seriesName
         series.fill = AmCore.color(colors[seriesIndex])
