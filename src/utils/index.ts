@@ -15,5 +15,5 @@ export const getUniqueKeyValues = (items: Array<object>, keyName: string): Array
     }
   })
 
-  return uniqueValues
+  return uniqueValues.sort((a: any, b: any) => (a < b ? -1 : (a > b ? 1 : 0)))
 }
